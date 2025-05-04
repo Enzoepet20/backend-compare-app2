@@ -8,23 +8,23 @@ const productRoutes = require('./routes/productRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
+// Express app setup
 const app = express();
-
 app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
 
-// Swagger docs
+// Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // API routes
 app.use('/products', productRoutes);
 app.use('/search', searchRoutes);
 
-// 404 and error handlers
+// 404 & error handlers
 app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

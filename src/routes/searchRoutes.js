@@ -7,19 +7,17 @@ const router = express.Router();
  * @swagger
  * /search:
  *   get:
- *     summary: Search for records by query term
+ *     summary: Search records by term in name, brand, or branch
  *     parameters:
  *       - in: query
  *         name: q
  *         required: true
- *         schema:
- *           type: string
- *         description: Term to search in name, brand or branch
+ *         schema: { type: string }
+ *         description: Search term
  *     responses:
- *       200:
- *         description: Search results
- *       400:
- *         description: Missing query parameter
+ *       200: { description: Search results }
+ *       400: { description: Missing query parameter }
  */
 router.get('/', cache, search);
+
 module.exports = router;
