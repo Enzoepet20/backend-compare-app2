@@ -5,8 +5,8 @@ const options = {
     openapi: '3.0.0',
     info: {
       title: 'Compare App Backend API',
-      version: '2.0.0',
-      description: 'API para consultar sucursales y productos con filtros y paginación'
+      version: '2.1.0',
+      description: 'API para consultar sucursales y productos con filtros avanzados, paginación y búsqueda'
     },
     servers: [{ url: `http://localhost:${process.env.PORT || 5000}` }]
   },

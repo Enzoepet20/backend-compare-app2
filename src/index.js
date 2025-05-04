@@ -10,20 +10,19 @@ const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
-// Middlewares
 app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
 
-// Swagger UI
+// Swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Routes
+// API routes
 app.use('/products', productRoutes);
 app.use('/search', searchRoutes);
 
-// Error handling
+// 404 and error handlers
 app.use(notFound);
 app.use(errorHandler);
 
