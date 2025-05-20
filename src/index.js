@@ -1,3 +1,4 @@
+// src/index.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -8,21 +9,27 @@ const productRoutes = require('./routes/productRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
-// Express app setup
+/**
+ * Punto de entrada de la aplicación.
+ * @module index
+ */
+
 const app = express();
+
+// Middlewares generales
 app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
 
-// Swagger documentation
+// Rutas de Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// API routes
+// Rutas de la API
 app.use('/products', productRoutes);
 app.use('/search', searchRoutes);
 
-// 404 & error handlers
+// Handlers de errores
 app.use(notFound);
 app.use(errorHandler);
 

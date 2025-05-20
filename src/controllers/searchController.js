@@ -1,8 +1,21 @@
+// src/controllers/searchController.js
 const { products } = require('./productController');
 
 /**
- * @desc Search records by term in nombre, marca, or sucursalNombre
- * @route GET /search?q=term
+ * @module controllers/searchController
+ */
+
+/**
+ * Busca en nombre, marca o sucursalNombre y devuelve hasta 100 resultados.
+ *
+ * @name GET /search
+ * @memberof module:controllers/searchController
+ * @function search
+ * @param {object} req - Objeto de petición HTTP (Express)
+ * @param {object} res - Objeto de respuesta HTTP (Express)
+ * @returns {void}
+ *
+ * @query {string} q - Término de búsqueda
  */
 const search = (req, res) => {
   const { q } = req.query;

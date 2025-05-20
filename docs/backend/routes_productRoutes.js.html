@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>routes/productRoutes.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-controllers_productController.html">controllers/productController</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-controllers_productController.html#.getById">getById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-controllers_productController.html#.getProducts">getProducts</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-controllers_searchController.html">controllers/searchController</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-controllers_searchController.html#.search">search</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-middleware_cache.html">middleware/cache</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-middleware_errorHandler.html">middleware/errorHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-middleware_errorHandler.html#~errorHandler">errorHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-middleware_errorHandler.html#~notFound">notFound</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-routes_productRoutes.html">routes/productRoutes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-routes_productRoutes.html#.GET/">GET /</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-routes_productRoutes.html#.GET/:id">GET /:id</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-routes_searchRoutes.html">routes/searchRoutes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-routes_searchRoutes.html#.GET/">GET /</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">routes/productRoutes.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// src/routes/productRoutes.js
+const express = require('express');
+const { getProducts, getById } = require('../controllers/productController');
+const cache = require('../middleware/cache');
+const router = express.Router();
+
+/**
+ * @module routes/productRoutes
+ */
+
+/**
+ * Retrieves paginated and filtered product or branch records.
+ *
+ * @name GET /
+ * @memberof module:routes/productRoutes
+ * @function
+ * @param {object} req - HTTP request object (Express)
+ * @param {object} res - HTTP response object (Express)
+ * @returns {void}
+ *
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: Get paginated &amp; filtered records
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: ["sucursal", "producto"]
+ *         description: Filter by record type
+ *       - in: query
+ *         name: provincia
+ *         schema: { type: string }
+ *         description: Province code
+ *       - in: query
+ *         name: localidad
+ *         schema: { type: string }
+ *         description: Locality name (case-insensitive)
+ *       - in: query
+ *         name: marca
+ *         schema: { type: string }
+ *         description: Product brand (case-insensitive)
+ *       - in: query
+ *         name: nombre
+ *         schema: { type: string }
+ *         description: Partial product name search
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, default: 100 }
+ *     responses:
+ *       200:
+ *         description: Paginated &amp; filtered data
+ */
+router.get('/', cache, getProducts);
+
+/**
+ * Retrieves a single record by its ID.
+ *
+ * @name GET /:id
+ * @memberof module:routes/productRoutes
+ * @function
+ * @param {object} req - HTTP request object (Express)
+ * @param {object} res - HTTP response object (Express)
+ * @returns {void}
+ *
+ * @swagger
+ * /products/{id}:
+ *   get:
+ *     summary: Get a single record by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Record ID (branch or product)
+ *     responses:
+ *       200: { description: Record object }
+ *       404: { description: Not found }
+ */
+router.get('/:id', cache, getById);
+
+module.exports = router;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon May 19 2025 21:59:08 GMT-0300 (hora estándar de Argentina) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

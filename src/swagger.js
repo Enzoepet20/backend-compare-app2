@@ -1,28 +1,16 @@
-const swaggerJsdoc = require('swagger-jsdoc');
+// src/swagger.js
 const swaggerUi = require('swagger-ui-express');
 const path = require('path');
+const fs = require('fs');
 
-const options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Compare App Backend API',
-      version: '2.2.0',
-      description: `📖 **Compare App** API documentation. Explore endpoints for branches and products with advanced filters, pagination, search, and caching.
+/** 
+ * Carga la especificación Swagger generada en docs/backend/swagger.json
+ * y configura el UI.
+ * @module swagger
+ */
+const swaggerPath = path.join(__dirname, '../docs/backend/swagger.json');
+const swaggerSpec = JSON.parse(fs.readFileSync(swaggerPath, 'utf-8'));
 
-**Usage Tips:**
-- Use the \`type\` parameter to distinguish between branches (\`sucursal\`) and products (\`producto\`).
-- Include examples in your queries to see sample responses.
-- Contact API support team at support@compareapp.com for more details.`
-    },
-    servers: [ { url: `http://localhost:${process.env.PORT || 5000}` } ]
-  },
-  apis: ['./src/routes/*.js'],
-};
-
-const swaggerSpec = swaggerJsdoc(options);
-
-// Custom CSS to tweak Swagger UI
 const customCss = `
   .swagger-ui .topbar { background-color: #4a90e2; }
   .swagger-ui .info .title { font-size: 2em; }
@@ -37,10 +25,10 @@ module.exports = {
     explorer: true,
     customCss,
     swaggerOptions: {
-      defaultModelsExpandDepth: -1, // hide schemas section
-      docExpansion: 'none',         // collapse endpoints
-      displayRequestDuration: true, // show request duration
-      showExtensions: true,
+      defaultModelsExpandDepth: -1,
+      docExpansion: 'none',
+      displayRequestDuration: true,
+      showExtensions: true
     }
   }
 };

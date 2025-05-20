@@ -68,4 +68,23 @@ compare-app-backend/
 | DATA_PATH  | ./data/products.json| Path to the JSON dataset               |
 | CACHE_TTL  | 300                 | Cache time-to-live in seconds          |
 
----
+## 🎁 Bonus: Swagger & Custom Templates
+
+- **Integración Swagger desde JSDoc**: Ejecuta `npm run docs:swagger` para generar `docs/backend/swagger.json` a partir de comentarios JSDoc en controladores y rutas, y `app.js` sirve esta especificación en `/api-docs`.
+- **Plantilla personalizada JSDoc**: Usamos `jsdoc-template` (instalada vía npm) configurada en `jsdoc.json` para generar HTML con estilo corporativo.
+- **Generar sitio de documentación completo**:
+  ```bash
+  # 1. Generar docs HTML con JSDoc + template
+  npm run docs:jsdoc
+
+  # 2. Generar Swagger JSON
+  npm run docs:swagger
+  ```
+- Los archivos resultantes estarán en `docs/backend`, con subcarpetas:
+  ```
+  docs/backend/
+  ├── controllers/
+  ├── middleware/
+  ├── routes/
+  └── swagger.json
+  ```

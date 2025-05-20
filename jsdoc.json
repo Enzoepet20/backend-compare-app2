@@ -1,0 +1,22 @@
+{
+    "tags": {
+      "allowUnknownTags": true
+    },
+    "source": {
+      "include": ["src/controllers", "src/middleware", "src/routes"],
+      "includePattern": ".+\\.js(doc|x)?$",
+      "excludePattern": "(^|\\/)node_modules\\/"
+    },
+    "plugins": [
+      "plugins/markdown"
+    ],
+    "templates": {
+      "cleverLinks": false,
+      "monospaceLinks": false
+    },
+    "opts": {
+      "destination": "docs/backend",
+      "recurse": true,
+      "template": "node_modules/minami"
+    }
+  }

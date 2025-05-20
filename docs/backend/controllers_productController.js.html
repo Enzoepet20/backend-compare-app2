@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>controllers/productController.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-controllers_productController.html">controllers/productController</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-controllers_productController.html#.getById">getById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-controllers_productController.html#.getProducts">getProducts</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-controllers_searchController.html">controllers/searchController</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-controllers_searchController.html#.search">search</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-middleware_cache.html">middleware/cache</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-middleware_errorHandler.html">middleware/errorHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-middleware_errorHandler.html#~errorHandler">errorHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-middleware_errorHandler.html#~notFound">notFound</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-routes_productRoutes.html">routes/productRoutes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-routes_productRoutes.html#.GET/">GET /</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-routes_productRoutes.html#.GET/:id">GET /:id</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-routes_searchRoutes.html">routes/searchRoutes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-routes_searchRoutes.html#.GET/">GET /</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">controllers/productController.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// src/controllers/productController.js
+const fs = require('fs');
+const path = require('path');
+const _ = require('lodash');
+
+/**
+ * @module controllers/productController
+ */
+
+/**
+ * In-memory store for product and branch records.
+ * @type {Array&lt;Object>}
+ */
+let products = [];
+
+/** 
+ * Carga inicial de datos desde JSON.
+ * @private
+ */
+(function loadData() {
+  const dataPath = process.env.DATA_PATH || path.join(__dirname, '../data/products.json');
+  try {
+    const raw = fs.readFileSync(dataPath, 'utf-8');
+    products = JSON.parse(raw);
+    console.log(`✅ Loaded ${products.length} records from ${dataPath}`);
+  } catch (err) {
+    console.error(`❌ Failed to load data from ${dataPath}:`, err);
+    process.exit(1);
+  }
+})();
+
+/**
+ * Obtiene productos o sucursales, con paginación y filtros.
+ *
+ * @name GET /products
+ * @memberof module:controllers/productController
+ * @function getProducts
+ * @param {object} req - Objeto de petición HTTP (Express)
+ * @param {object} res - Objeto de respuesta HTTP (Express)
+ * @returns {void}
+ *
+ * @query {string} [type] - 'sucursal' o 'producto'
+ * @query {string} [provincia]
+ * @query {string} [localidad]
+ * @query {string} [marca]
+ * @query {string} [nombre]
+ * @query {number} [page=1]
+ * @query {number} [limit=100]
+ */
+const getProducts = (req, res) => {
+  let data = products;
+  const { type, provincia, localidad, marca, nombre } = req.query;
+
+  if (type === 'sucursal') data = data.filter(p => p.sucursalNombre);
+  if (type === 'producto') data = data.filter(p => p.marca);
+  if (provincia) data = data.filter(p => p.provincia === provincia);
+  if (localidad) data = data.filter(p => p.localidad?.toLowerCase() === localidad.toLowerCase());
+  if (marca) data = data.filter(p => p.marca?.toLowerCase() === marca.toLowerCase());
+  if (nombre) data = data.filter(p => p.nombre?.toLowerCase().includes(nombre.toLowerCase()));
+
+  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit, 10) || 100);
+  const start = (page - 1) * limit;
+  const slice = _.slice(data, start, start + limit);
+
+  return res.json({ page, limit, total: data.length, data: slice });
+};
+
+/**
+ * Obtiene un producto o sucursal por su ID.
+ *
+ * @name GET /products/:id
+ * @memberof module:controllers/productController
+ * @function getById
+ * @param {object} req - Objeto de petición HTTP (Express)
+ * @param {object} res - Objeto de respuesta HTTP (Express)
+ * @returns {void}
+ *
+ * @param {string} req.params.id - ID del registro (id, producto_id o sucursalId)
+ */
+const getById = (req, res) => {
+  const { id } = req.params;
+  const record = products.find(
+    p => p.id === id || p.producto_id === id || p.sucursalId === id
+  );
+  if (!record) return res.status(404).json({ message: 'Record not found' });
+  return res.json(record);
+};
+
+module.exports = { getProducts, getById, products };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon May 19 2025 21:59:08 GMT-0300 (hora estándar de Argentina) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

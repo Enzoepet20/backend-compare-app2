@@ -1,8 +1,22 @@
+// src/controllers/productController.js
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
+/**
+ * @module controllers/productController
+ */
+
+/**
+ * In-memory store for product and branch records.
+ * @type {Array<Object>}
+ */
 let products = [];
+
+/** 
+ * Carga inicial de datos desde JSON.
+ * @private
+ */
 (function loadData() {
   const dataPath = process.env.DATA_PATH || path.join(__dirname, '../data/products.json');
   try {
@@ -16,15 +30,22 @@ let products = [];
 })();
 
 /**
- * @desc Get paginated & filtered products or branches
- * @route GET /products
- * @query {string} type - 'sucursal' or 'producto'
- * @query {string} provincia
- * @query {string} localidad
- * @query {string} marca
- * @query {string} nombre
- * @query {number} page
- * @query {number} limit
+ * Obtiene productos o sucursales, con paginación y filtros.
+ *
+ * @name GET /products
+ * @memberof module:controllers/productController
+ * @function getProducts
+ * @param {object} req - Objeto de petición HTTP (Express)
+ * @param {object} res - Objeto de respuesta HTTP (Express)
+ * @returns {void}
+ *
+ * @query {string} [type] - 'sucursal' o 'producto'
+ * @query {string} [provincia]
+ * @query {string} [localidad]
+ * @query {string} [marca]
+ * @query {string} [nombre]
+ * @query {number} [page=1]
+ * @query {number} [limit=100]
  */
 const getProducts = (req, res) => {
   let data = products;
@@ -46,12 +67,22 @@ const getProducts = (req, res) => {
 };
 
 /**
- * @desc Get single record by ID (branch or product)
- * @route GET /products/:id
+ * Obtiene un producto o sucursal por su ID.
+ *
+ * @name GET /products/:id
+ * @memberof module:controllers/productController
+ * @function getById
+ * @param {object} req - Objeto de petición HTTP (Express)
+ * @param {object} res - Objeto de respuesta HTTP (Express)
+ * @returns {void}
+ *
+ * @param {string} req.params.id - ID del registro (id, producto_id o sucursalId)
  */
 const getById = (req, res) => {
   const { id } = req.params;
-  const record = products.find(p => p.id === id || p.producto_id === id || p.sucursalId === id);
+  const record = products.find(
+    p => p.id === id || p.producto_id === id || p.sucursalId === id
+  );
   if (!record) return res.status(404).json({ message: 'Record not found' });
   return res.json(record);
 };

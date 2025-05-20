@@ -1,9 +1,23 @@
+// src/routes/searchRoutes.js
 const express = require('express');
 const { search } = require('../controllers/searchController');
 const cache = require('../middleware/cache');
 const router = express.Router();
 
 /**
+ * @module routes/searchRoutes
+ */
+
+/**
+ * Searches records by name, brand, or branch term.
+ *
+ * @name GET /
+ * @memberof module:routes/searchRoutes
+ * @function
+ * @param {object} req - HTTP request object (Express)
+ * @param {object} res - HTTP response object (Express)
+ * @returns {void}
+ *
  * @swagger
  * /search:
  *   get:
