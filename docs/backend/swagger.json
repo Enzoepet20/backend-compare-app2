@@ -1,0 +1,21 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API de Productos",
+      "version": "1.0.0",
+      "description": "Documentación de la API con Swagger"
+    },
+    "paths": {
+      "/products": {
+        "get": {
+          "summary": "Obtiene todos los productos",
+          "responses": {
+            "200": {
+              "description": "Lista de productos"
+            }
+          }
+        }
+      }
+    }
+  }
+  
