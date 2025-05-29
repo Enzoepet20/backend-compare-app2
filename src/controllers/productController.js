@@ -8,7 +8,7 @@ const _ = require('lodash');
  */
 
 /**
- * In-memory store for product and branch records.
+ * In-memory store for product aaaand branch records.
  * @type {Array<Object>}
  */
 let products = [];
